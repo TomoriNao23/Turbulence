@@ -9,6 +9,7 @@ for i = 1:n
 end
 hold off;
 box on;
+axis auto
 
 xlabel(labelsx, 'Interpreter', 'latex');
 ylabel(labelsy, 'Interpreter', 'latex');

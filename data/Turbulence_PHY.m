@@ -41,5 +41,6 @@ end
  Vp = permute(tVp, [3, 2, 1]);
  Wp = permute(tWp, [3, 2, 1]);
   P = permute(tP, [3, 2, 1]);
+  delta = 1;
 
-save ('import_phy.mat', 'NX','NY','NZ','Rem','X', 'Y', 'Z', 'Up', 'Vp', 'Wp')
+save ('import_phy.mat', 'NX','NY','NZ','Rem','X', 'Y', 'Z', 'Up', 'Vp', 'Wp', 'P', 'delta');
