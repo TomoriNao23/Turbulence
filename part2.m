@@ -1,58 +1,13 @@
-clc;
-clear;
+clc;clear;close all;
+addpath('function','data');
+load('import_phy.mat')
 
-fileID = fopen('PHYSICAL.DAT', 'r');
-PHYSICAL = textscan(fileID, '%f %f %f %f %f %f %f', 'HeaderLines', 3);
-fclose(fileID);
-
-NX = 96;
-NY = 129;
-NZ = 96;
-
-X1 = reshape(PHYSICAL{1}, [NZ, NY, NX]);
-Y1 = reshape(PHYSICAL{2}, [NZ, NY, NX]);
-Z1 = reshape(PHYSICAL{3}, [NZ, NY, NX]);
-X2 = X1(1, 1, :);
-Y2 = Y1(1, :, 1);
-Z2 = Z1(:, 1, 1);
-X = squeeze(X2);
-Y = Y2';
-Z = squeeze(Z2);
-
-tUp = reshape(PHYSICAL{4}, [NZ, NY, NX]);
-tVp = reshape(PHYSICAL{5}, [NZ, NY, NX]);
-tWp = reshape(PHYSICAL{6}, [NZ, NY, NX]);
-tP = reshape(PHYSICAL{7}, [NZ, NY, NX]);
-Up = permute(tUp, [3, 2, 1]);
-Vp = permute(tVp, [3, 2, 1]);
-Wp = permute(tWp, [3, 2, 1]);
-P = permute(tP, [3, 2, 1]);
-
-u_avg = mean(Up, [1 3]);
-v_avg = mean(Vp, [1 3]);
-w_avg = mean(Wp, [1 3]);
-
-u_turb = Up - u_avg;
-v_turb = Vp - v_avg;
-w_turb = Wp - w_avg;
-
-rey_uu = u_turb .* u_turb;
-rey_uv = u_turb .* v_turb;
-rey_uw = u_turb .* w_turb;
-rey_vv = v_turb .* v_turb;
-rey_vw = v_turb .* w_turb;
-rey_ww = w_turb .* w_turb;
-
-rey_uu = mean(rey_uu, [1 3]);
-rey_uv = mean(rey_uv, [1 3]);
-rey_uw = mean(rey_uw, [1 3]);
-rey_vv = mean(rey_vv, [1 3]);
-rey_vw = mean(rey_vw, [1 3]);
-rey_ww = mean(rey_ww, [1 3]);
+[u_avg, v_avg, w_avg] = calculateMeanVelocity(Up, Vp, Wp);
+[u_turb, v_turb, w_turb] = calculateTurbulentFluctuations(Up, Vp, Wp, u_avg, v_avg, w_avg);
+[rey_uu, rey_uv, rey_uw, rey_vv, rey_vw, rey_ww] = calculateReynoldsStress(u_turb, v_turb, w_turb);
 
 Um = 1;
 delta = 1;
-Rem = 2800;
 
 du_um = (u_avg(end) - u_avg(end - 1)) / Um;
 dy_delta = (Y(end) - Y(end - 1)) / delta;
@@ -94,7 +49,7 @@ figure(1)
         ylabel('$u^+$', 'Interpreter', 'latex')
         
     sgtitle('Mean Velocity Profile', 'HorizontalAlignment', 'center');
-print(gcf, 'Mean Velocity Profile_Wall.png', '-dpng', '-r300');
+print(gcf, './photo/part2/Mean Velocity Profile_Wall.png', '-dpng', '-r300');
 
 rey_uu_new = rey_uu / (u_tao * u_tao);
 rey_uv_new = rey_uv / (u_tao * u_tao);
@@ -110,7 +65,7 @@ figure(2);
     ylabel('$\langle{u_i''u_j''}\rangle /u^2_\tau$', 'Interpreter', 'latex')
     xlim([0 y_plus_max])
     sgtitle('Reynolds Stress', 'HorizontalAlignment', 'center');
-print(gcf, 'Reynolds Stress_Wall.png', '-dpng', '-r300');
+print(gcf, './photo/part2/Reynolds Stress_Wall.png', '-dpng', '-r300');
 
 y0 = 114;
 
@@ -181,4 +136,4 @@ figure(3)
         ylabel('$R_{ij} $', 'Interpreter', 'latex')
         title('Spanwise', 'HorizontalAlignment', 'center');
 
-print(gcf, 'Point Autocorrelation Coefficient.png', '-dpng', '-r300');
+print(gcf, './photo/part2/Point Autocorrelation Coefficient.png', '-dpng', '-r300');
