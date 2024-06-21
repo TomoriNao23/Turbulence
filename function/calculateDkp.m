@@ -7,5 +7,5 @@ function pv_turb_diff = calculateDkp(Y,p_turb,v_turb)
     pvt_diff = diff(pv_turb_avg);
     pv_diff=pvt_diff;
 
-    pv_turb_diff = pv_diff ./ Y_diff';
+    pv_turb_diff = -pv_diff ./ Y_diff';
 end

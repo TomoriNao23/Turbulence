@@ -4,5 +4,4 @@ function [u_avg, v_avg, w_avg,p_avg] = calculateMeanVelocity(Up, Vp, Wp,P)
     v_avg = mean(Vp, [1 3]);
     w_avg = mean(Wp, [1 3]);
     p_avg = mean(P, [1 3]);
-
 end

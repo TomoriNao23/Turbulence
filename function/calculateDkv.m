@@ -7,5 +7,5 @@ function Dkv = calculateDkv(Y,u_turb,v_turb,w_turb)
     
         Dkv = s_diff2 ./ Y_diff(1:end-1)';
         Dkv = Dkv /2800/2;
-
+        Dkv(end+1) = Dkv(end);
 end
